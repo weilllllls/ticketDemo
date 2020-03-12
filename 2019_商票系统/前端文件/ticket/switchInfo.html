@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>商票详情</title>
+  <link rel="stylesheet" href="lib/layui/css/layui.css">
+</head>
+
+<body>
+  <h1 style="margin: 50px;">被转让人信息</h1>
+  <form class="layui-form" action="" style="width: 500px;margin:20px 150px;">
+    <div class="layui-form-item">
+      <label class="layui-form-label">全称</label>
+      <input placeholder="全称" type="text" required class="layui-input test-item" style="width: 190px;" id="name">
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">转让金额</label>
+      <div class="layui-input-block">
+        <input type="text" name="title" lay-verify="" placeholder="转让金额" autocomplete="off" class="layui-input"
+          style="width: 190px;" id="price">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">开户行名称</label>
+      <div class="layui-input-block">
+        <input type="text" name="title" lay-verify="" placeholder="开户行名称" autocomplete="off" class="layui-input"
+          style="width: 190px;" id="bankName">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">开户行行号</label>
+      <div class="layui-input-block">
+        <input type="text" name="title" lay-verify="" placeholder="开户行行号" autocomplete="off" class="layui-input"
+          style="width: 190px;" id="bankNum">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">银行账户名</label>
+      <div class="layui-input-block">
+        <input type="text" name="title" lay-verify="" placeholder="银行账户名" autocomplete="off" class="layui-input"
+          style="width: 190px;" id="accountName">
+      </div>
+    </div>
+
+    <div class="layui-btn" lay-submit lay-filter="formDemo" id="regBtn">提交</div>
+  </form>
+
+  <script src="lib/layui/layui.all.js"></script>
+  <script src="lib/ajax.js"></script>
+  <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+  <script>
+    // 接收
+    var url = window.location.search;
+    var urlResult = [];
+    var arrUrl = url.substr(1).split("&");
+    //遍历
+    for (var j = 0; j < arrUrl.length; j++) {
+      urlResult[j] = decodeURI(arrUrl[j].split("=")[1]);
+    }
+    var id = urlResult[0];
+    var uid = JSON.parse(localStorage.getItem("user")).id;
+    console.log("转让人的id为"+uid);
+    console.log("")
+    //由于模块都一次性加载，因此不用执行 layui.use() 来加载对应模块，直接使用即可：
+    ;
+    ! function () {
+      var layer = layui.layer,
+        form = layui.form;
+
+    }();
+
+    $(function () {
+
+    });
+
+    $('#regBtn').click(function () {
+
+      //名称
+      var name = $('#name').val();
+      var price = $('#price').val();
+      var accountName = $('#accountName').val();
+      var bankName = $('#bankName').val();
+      var bankNum = $('#bankNum').val();
+
+
+
+      var json = {
+        "ticketId": id,
+        "userId": uid,
+        "price": price,
+        "name": name,
+        "accountName": accountName,
+        "bankName": bankName,
+        "bankNum": bankNum
+      }
+
+      var res = postRequest("http://localhost:8089/v1/ticket/transferTicket", json);
+      layer.msg(res.msg);
+      setTimeout(function () {
+        location.reload();
+      }, 1000);
+    });
+  </script>
+</body>
+
+</html>

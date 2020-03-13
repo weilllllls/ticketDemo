@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>商票列表</title>
+  <link rel="stylesheet" href="lib/layui/css/layui.css">
+</head>
+
+<body>
+  <h1 style="margin: 50px;">确认出票人提交的商票</h1>
+  <table class="layui-table" style="margin-left: 50px;" lay-size="sm">
+    <colgroup>
+      <col width="80">
+      <col width="80">
+      <col width="80">
+      <col width="80">
+      <col width="80">
+      <col width="80">
+      <col width="80">
+      <col width="80">
+      <col width="80">
+      <col width="80">
+      <col width="80">
+      <col width="80">
+      <col width="200">
+    </colgroup>
+    <thead>
+      <tr>
+        <th>票据号码</th>
+        <th>出票人</th>
+        <th>收票人</th>
+        <th>票据全额</th>
+        <th>能否转让</th>
+        <th>票据状态</th>
+        <th>出票日期</th>
+        <th>汇票到期日</th>
+      </tr>
+    </thead>
+    <tbody id="dataContainer">
+    </tbody>
+  </table>
+
+  <div style="margin-left: 50px;">
+    <div id="test1"></div>
+  </div>
+
+
+
+  <script src="lib/layui/layui.all.js"></script>
+  <script src="lib/ajax.js"></script>
+  <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+  <script>
+    //由于模块都一次性加载，因此不用执行 layui.use() 来加载对应模块，直接使用即可：
+    ;
+    ! function () {
+      var layer = layui.layer,
+        form = layui.form;
+
+
+    }();
+
+
+
+    //初始化数据
+    $(function () {
+      var uid = JSON.parse(localStorage.getItem("user")).id;
+      res = getRequest('http://localhost:8089/v1/ticket/unConfirmList?userId='+uid+'&pageNum=1&pageSize=20');
+      //初始化数据
+      $('#dataContainer *').empty();
+      for (let i = 0; i < res.data.list.length; i++) {
+        $('#dataContainer').append("<tr class=\"go\" key=\"" + res.data.list[i].id + "\"><td>" + res.data.list[i]
+          .ticketNum +
+          "</td><td>" + res.data.list[i].issueUser +
+          "</td><td>" + res.data.list[i].receiveUser +
+          "</td><td>" + res.data.list[i].price +
+          "</td><td>" + res.data.list[i].giveWay +
+          "</td><td>" + res.data.list[i].ticketState +
+          "</td><td>" + res.data.list[i].issueDate +
+          "</td><td>" + res.data.list[i].expireDate + "</tr>");
+      }
+      //执行一个laypage实例
+      layui.use('laypage', function () {
+        var laypage = layui.laypage;
+        laypage.render({
+          elem: 'test1' //注意，这里的 test1 是 ID，不用加 # 号
+            ,
+          count: res.data.total, //数据总数，从服务端得到
+          jump: function (obj, first) {
+            //obj包含了当前分页的所有参数，比如：
+            console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+            console.log(obj.limit); //得到每页显示的条数
+            page = obj.curr; //改变当前页码
+            limit = obj.limit;
+            //首次不执行
+            if (!first) {
+              res = getRequest(
+                'http://localhost:8089/v1/ticket/unConfirmList?userId='+uid+'&pageNum=' + page + '&pageSize=' +
+                limit 
+              );
+              //初始化数据
+              $('#dataContainer *').empty();
+              for (let i = 0; i < res.data.list.length; i++) {
+                $('#dataContainer').append("<tr class=\"go\" key=\"" + res.data.list[i].id + "\"><td>" +
+                  res.data.list[i]
+                  .ticketNum +
+                  "</td><td>" + res.data.list[i].issueUser +
+                  "</td><td>" + res.data.list[i].receiveUser +
+                  "</td><td>" + res.data.list[i].price +
+                  "</td><td>" + res.data.list[i].giveWay +
+                  "</td><td>" + res.data.list[i].ticketState +
+                  "</td><td>" + res.data.list[i].issueDate +
+                  "</td><td>" + res.data.list[i].expireDate + "</tr>");
+              }
+            }
+          }
+        });
+
+      });
+
+
+    });
+
+    //按钮查询
+    $('#searchBtn').click(function () {
+      var uid = JSON.parse(localStorage.getItem("user")).id;
+      var mortgage = $('#select').val();
+      res = getRequest('http://localhost:8089/v1/ticket/unConfirmList?userId='+uid+'&pageNum=1&pageSize=20');
+      //初始化数据
+      $('#dataContainer *').empty();
+      for (let i = 0; i < res.data.list.length; i++) {
+        $('#dataContainer').append("<tr class=\"go\" key=\"" + res.data.list[i].id + "\"><td>" + res.data.list[i]
+          .ticketNum +
+          "</td><td>" + res.data.list[i].issueUser +
+          "</td><td>" + res.data.list[i].receiveUser +
+          "</td><td>" + res.data.list[i].price +
+          "</td><td>" + res.data.list[i].giveWay +
+          "</td><td>" + res.data.list[i].ticketState +
+          "</td><td>" + res.data.list[i].issueDate +
+          "</td><td>" + res.data.list[i].expireDate + "</tr>");
+      }
+      //执行一个laypage实例
+      layui.use('laypage', function () {
+        var laypage = layui.laypage;
+        laypage.render({
+          elem: 'test1' //注意，这里的 test1 是 ID，不用加 # 号
+            ,
+          count: res.data.total, //数据总数，从服务端得到
+          jump: function (obj, first) {
+            //obj包含了当前分页的所有参数，比如：
+            console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+            console.log(obj.limit); //得到每页显示的条数
+            page = obj.curr; //改变当前页码
+            limit = obj.limit;
+            //首次不执行
+            if (!first) {
+              res = getRequest(
+                'http://localhost:8089/v1/ticket/unConfirmList?userId='+uid+'&pageNum=' + page + '&pageSize=' +
+                limit
+              );
+              //初始化数据
+              $('#dataContainer *').empty();
+              for (let i = 0; i < res.data.list.length; i++) {
+                $('#dataContainer').append("<tr class=\"go\" key=\"" + res.data.list[i].id + "\"><td>" +
+                  res.data.list[i]
+                  .ticketNum +
+                  "</td><td>" + res.data.list[i].issueUser +
+                  "</td><td>" + res.data.list[i].receiveUser +
+                  "</td><td>" + res.data.list[i].price +
+                  "</td><td>" + res.data.list[i].giveWay +
+                  "</td><td>" + res.data.list[i].ticketState +
+                  "</td><td>" + res.data.list[i].issueDate +
+                  "</td><td>" + res.data.list[i].expireDate + "</tr>");
+              }
+            }
+          }
+        });
+
+      });
+    });
+    
+
+    //带页面
+    $(document).on("click", "#dataContainer tr", function () {
+      // //1. 获取id值
+      var cid = $(this).attr("key");
+      // //2. 页面跳转
+      location.href = "confirm.html?cid=" + cid;
+    });
+  </script>
+</body>
+
+</html>

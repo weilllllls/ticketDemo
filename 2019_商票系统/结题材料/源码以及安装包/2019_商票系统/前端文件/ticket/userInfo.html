@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>商票详情</title>
+  <link rel="stylesheet" href="lib/layui/css/layui.css">
+</head>
+
+<body>
+  <h1 style="margin: 50px;">用户信息</h1>
+  <form class="layui-form" action="" style="width: 500px;margin:20px 150px;">
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">登录名</label>
+      <input disabled type="text" class="layui-input test-item" style="width: 190px;" id="userName">
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">全称</label>
+      <input disabled type="text" class="layui-input test-item" style="width: 190px;" id="name">
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">余额</label>
+      <div class="layui-input-block">
+        <input disabled type="number" min="100" name="title" lay-verify="" autocomplete="off" class="layui-input"
+          style="width: 190px;" id="balance">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">信用值</label>
+      <div class="layui-input-block">
+        <input disabled type="text" name="title" lay-verify="" placeholder="交易合同号" autocomplete="off"
+          class="layui-input" style="width: 190px;" id="credit">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">开户行名称</label>
+      <div class="layui-input-block">
+        <input disabled type="text" name="title" lay-verify="" placeholder="交易合同号" autocomplete="off"
+          class="layui-input" style="width: 190px;" id="bankName">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">开户行行号</label>
+      <div class="layui-input-block">
+        <input disabled type="text" name="title" lay-verify="" placeholder="交易合同号" autocomplete="off"
+          class="layui-input" style="width: 190px;" id="bankNum">
+      </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">银行账号</label>
+        <div class="layui-input-block">
+          <input disabled type="text" name="title" lay-verify="" placeholder="交易合同号" autocomplete="off"
+            class="layui-input" style="width: 190px;" id="bankAccount">
+        </div>
+      </div>
+    
+  </form>
+
+  <script src="lib/layui/layui.all.js"></script>
+  <script src="lib/ajax.js"></script>
+  <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+  <script>
+    var id
+    //由于模块都一次性加载，因此不用执行 layui.use() 来加载对应模块，直接使用即可：
+    ;
+    ! function () {
+      var layer = layui.layer,
+        form = layui.form;
+
+    }();
+
+    $(function () {
+      //刷新余额
+      var uid = JSON.parse(localStorage.getItem("user")).id;
+      var res1 = getRequest("http://localhost:8089/v1/ticket/getBalance?uid="+uid);
+      var user1 = JSON.parse(localStorage.getItem("user"));
+      user1.balance = res1.data;
+      localStorage.setItem("user",JSON.stringify(user1));
+
+      var user = JSON.parse(localStorage.getItem("user"));
+      console.log(user);
+      $('#userName').val(user.userName);
+      $('#name').val(user.name);
+      $('#balance').val(user.balance);
+      $('#credit').val(user.credit);
+      $('#bankName').val(user.bankName);
+      $('#bankNum').val(user.bankNum);
+      $('#bankAccount').val(user.bankAccount);
+    });
+  </script>
+</body>
+
+</html>

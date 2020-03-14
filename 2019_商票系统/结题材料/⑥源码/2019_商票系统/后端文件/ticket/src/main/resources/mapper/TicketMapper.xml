@@ -1,0 +1,56 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.product.ticket.mapper.TicketMapper">
+    <!--条件查询出票列表-->
+    <select id="selectTickets" resultType="com.product.ticket.entity.Ticket">
+        SELECT * FROM tkt_ticket
+        WHERE user_id = #{userId}
+        <if test="mortgage != null and mortgage != '' ">
+            AND mortgage = #{mortgage}
+        </if>
+        <if test="lock != null and lock != ''">
+            AND lock = #{lock}
+        </if>
+        <if test="ticketNum != null and ticketNum != ''">
+            AND ticket_num = #{ticketNum}
+        </if>
+        <if test="price != null and price != ''">
+            AND price = #{price}
+        </if>
+        <if test="startDate != null and startDate != '' and endDate != null and endDate != '' ">
+        and issue_date between #{startDate} and #{endDate}
+        </if>
+        ORDER BY id DESC
+    </select>
+
+    <!--条件查询收票列表-->
+    <select id="selectReceverTickets" resultType="com.product.ticket.entity.Ticket">
+        SELECT * FROM tkt_ticket
+        WHERE receive_id = #{userId}
+        <if test="mortgage != null and mortgage != '' ">
+            AND mortgage = #{mortgage}
+        </if>
+        <if test="lock != null and lock != ''">
+            AND lock = #{lock}
+        </if>
+        <if test="ticketNum != null and ticketNum != ''">
+            AND ticket_num = #{ticketNum}
+        </if>
+        <if test="price != null and price != ''">
+            AND price = #{price}
+        </if>
+        <if test="startDate != null and startDate != '' and endDate != null and endDate != '' ">
+            and issue_date between #{startDate} and #{endDate}
+        </if>
+        ORDER BY id DESC
+    </select>
+
+    <!--查未确认列表-->
+    <select id="selectUnconfirmTickets" resultType="com.product.ticket.entity.Ticket">
+        SELECT * FROM tkt_ticket
+        WHERE receive_id = #{userId}
+        AND confirm = 0
+        ORDER BY id DESC
+    </select>
+
+
+</mapper>

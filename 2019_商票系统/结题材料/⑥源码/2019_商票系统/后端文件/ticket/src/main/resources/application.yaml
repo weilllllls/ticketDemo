@@ -1,0 +1,25 @@
+server:
+  port: 8089
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/ticket?characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8&rewriteBatchedStatements=true
+    username: root
+    password: 12345678
+  thymeleaf:
+    cache: false
+    encoding: UTF-8
+    mode: HTML
+    prefix: classpath:/templates/
+    servlet:
+      content-type: text/html
+    suffix: .html
+
+pagehelper:
+  helperDialect: mysql
+  page-size-zero: false
+  params: count=countSql
+  reasonable: true
+  supportMethodsArguments: true
+
